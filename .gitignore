@@ -1,0 +1,8 @@
+# secrets
+.env
+*.key
+# private run data (may contain personal or client details)
+runs/
+labels/
+keys/private/
+__pycache__/
