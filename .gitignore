@@ -7,4 +7,5 @@ labels/
 keys/private/
 __pycache__/
 inputs/
+data/
 money.csv

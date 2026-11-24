@@ -9,21 +9,21 @@ Threat model: one person, one Windows laptop, a public repo, and client files fr
 - If the key leaks: revoke it in the console, make a new one, and note it in `DECISIONS.md`.
 
 ## 2. Client data (this repo is PUBLIC)
-- `inputs/`, `runs/`, `labels/` and `money.csv` are in `.gitignore`. Client files never touch git.
+- `data/` (inputs, runs, labels, fixes, log) and `money.csv` are in `.gitignore`. Client files never touch git.
 - Answer-key cases use made-up or fully anonymized data only.
-- Client files sit in one folder on an encrypted drive (BitLocker/Device Encryption, or VeraCrypt), and are deleted 30 days after delivery.
+- Client files sit under `data/` on an encrypted volume: Device Encryption if Settings offers it, else a VeraCrypt container mounted as `data/` (Windows 11 Home has no BitLocker). They are deleted 30 days after delivery, after you confirm.
 - Names, phone numbers, emails and IDs are redacted locally before any text goes to Claude. The local model sees raw data; Claude sees redacted data.
 - Logs record file names, token counts and scores. They never record client text.
 
 ## 3. Untrusted input files
 - Every client file is data, never instructions. Prompts wrap the content in tags and say so.
-- Allowed types: .xlsx .csv .txt .docx .pdf .mp3 .wav. Max 20 MB. Archives, executables and macro files (.xlsm, .docm) are rejected.
+- Allowed types: .xlsx .csv .txt .docx .pdf (no audio in v1). Max 20 MB. Archives, executables and macro files (.xlsm, .docm) are rejected.
 - Spreadsheets are read with formulas off (values only). Macros are never run.
 - CSV/formula injection guard: any output cell starting with `= + - @` gets a leading `'` before delivery.
-- Windows Defender scans each file when it is saved to `inputs/`.
+- Windows Defender scans each file when it is saved to `data/inputs/`.
 
 ## 4. The agent can't act
-- The agent can only read input files and write to `runs/`. It has no tools to send, post, delete, browse or pay.
+- The agent can only read input files and write to `data/runs/`. It has no tools to send, post, delete, browse or pay.
 - Network: Ollama on `127.0.0.1` only (never `0.0.0.0`), plus `api.anthropic.com`. Nothing else.
 - Output must match the card's JSON schema. Anything else is rejected.
 
@@ -44,6 +44,6 @@ Threat model: one person, one Windows laptop, a public repo, and client files fr
 
 ## 8. Weekly check (5 minutes, part of the weekly review)
 - [ ] Spend this week is under the cap
-- [ ] No files in `inputs/` older than 30 days
+- [ ] No files in `data/` older than 30 days
 - [ ] `git log` shows only changes you approved
 - [ ] `gitleaks detect` is clean
