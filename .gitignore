@@ -6,3 +6,5 @@ runs/
 labels/
 keys/private/
 __pycache__/
+inputs/
+money.csv
